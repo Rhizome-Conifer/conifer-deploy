@@ -1,0 +1,6 @@
+- src: geerlingguy.nginx
+
+- src: geerlingguy.docker
+
+- src: geerlingguy.pip
+
