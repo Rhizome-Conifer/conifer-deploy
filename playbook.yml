@@ -1,11 +1,10 @@
 - hosts: server
   vars:
     wr_dir: ~/webrecorder
-    wr_ratelimit_exclude: []
 
     cert_key_name: '{{ wr_app_host }}'
 
-    certbot_email: 'support@webrecorder.io'
+    certbot_email: 'test@example.com'
 
     nginx_conf_template: "{{ playbook_dir }}/templates/nginx.conf"
     nginx_vhost_template: "{{ playbook_dir }}/templates/wrhost.conf"
