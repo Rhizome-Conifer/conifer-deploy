@@ -1,0 +1,22 @@
+---
+  - name: 'Add Apt'
+    apt_repository:
+      repo: 'ppa:certbot/certbot'
+
+  - name: Update apt
+    apt: update_cache=yes
+
+  - name: Install letencrypt
+    apt: name={{item}} state=present
+    with_items:
+      - letsencrypt
+      #- python-certbot-nginx
+
+  - name: Run Certbot
+    shell: certbot certonly --standalone --agree-tos --email "{{ certbot_email }}" --no-redirect -n -d "{{ wr_app_host }},{{ wr_content_host }}"
+    register: runcert
+
+  - debug: var=runcert
+
+
+

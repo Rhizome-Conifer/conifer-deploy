@@ -1,10 +1,12 @@
 - hosts: server
   vars:
-    wr_dir: /tmp/webrecorder
+    wr_dir: ~/webrecorder
     wr_ratelimit_exclude: []
-    wr_app_host: 'test1.webrecorder.io'
-    wr_content_host: 'test1.wbrc.io'
 
+    wr_app_host: 'test2.webrecorder.io'
+    wr_content_host: 'test2.wbrc.io'
+
+    cert_key_name: '{{ wr_app_host }}'
 
     nginx_conf_template: "{{ playbook_dir }}/templates/nginx.conf"
     nginx_vhost_template: "{{ playbook_dir }}/templates/wrhost.conf"
@@ -21,58 +23,13 @@
     certbot_email: 'support@webrecorder.io'
     pip_install_packages:
       - name: docker-compose
+      - name: cryptography
 
   roles:
+    - { role: geerlingguy.pip, become: true, become_user: root }
+    - { role: certbot, become: true, become_user: root }
     - { role: geerlingguy.nginx, become: true, become_user: root }
     - { role: geerlingguy.docker, become: true, become_user: root }
-    - { role: geerlingguy.pip, become: true, become_user: root }
-
-  tasks:
-    - name: 'WR Clone'
-      git:
-        repo: 'https://github.com/webrecorder/webrecorder'
-        dest: '{{ wr_dir }}'
-
-    - stat: 'path={{ wr_dir }}/wr.env'
-      register: wr_env
-
-    - name: 'WR Init'
-      shell: ./init-default.sh
-      args:
-        chdir: '{{ wr_dir }}'
-      when: wr_env.stat.exists == False
-
-    #- name: 'Run WR Docker'
-    #  docker_service:
-    #    project_src: '{{ wr_dir }}'
-    #    build: yes
-    #    state: present
-
-    - name: 'Add Apt'
-      become: true
-      apt_repository:
-        repo: 'ppa:certbot/certbot'
-
-    - name: Update apt
-      become: true
-      apt: update_cache=yes
-
-    - name: Install letencrypt
-      become: true
-      apt: name={{item}} state=present
-      with_items:
-        - letsencrypt
-        - python-certbot-nginx
-
-#    - name: 'Install crypto'
-#      pip:
-#        name: cryptography
-
-    - name: Run Certbot
-      become: true
-      shell: certbot --agree-tos --email "{{ certbot_email }}" --nginx --no-redirect -n -d "{{ wr_app_host }},{{ wr_content_host }}"
-      register: runcert
-
-    - debug: var=runcert
-
+    - { role: wrinit }
+#  tasks:
 
