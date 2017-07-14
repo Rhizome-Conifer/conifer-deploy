@@ -18,5 +18,10 @@
 
   - debug: var=runcert
 
-
+  - name: Certbot Renew Cron
+    cron:
+      name: "certbot renew"
+      minute: "26"
+      hour: "7"
+      job: 'certbot renew -n --post-hook "service reload nginx"'
 

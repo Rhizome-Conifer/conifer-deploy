@@ -3,10 +3,9 @@
     wr_dir: ~/webrecorder
     wr_ratelimit_exclude: []
 
-    wr_app_host: 'test2.webrecorder.io'
-    wr_content_host: 'test2.wbrc.io'
-
     cert_key_name: '{{ wr_app_host }}'
+
+    certbot_email: 'support@webrecorder.io'
 
     nginx_conf_template: "{{ playbook_dir }}/templates/nginx.conf"
     nginx_vhost_template: "{{ playbook_dir }}/templates/wrhost.conf"
@@ -20,16 +19,20 @@
         filename: "{{ wr_content_host }}.conf"
         include_ws: false
 
-    certbot_email: 'support@webrecorder.io'
     pip_install_packages:
       - name: docker-compose
       - name: cryptography
 
+  pre_tasks:
+    - fail:
+        msg: 'Variables "wr_app_host" and "wr_content_host" must be defined'
+      when: "'wr_app_host' not in vars or 'wr_content_host' not in vars"
+
   roles:
     - { role: geerlingguy.pip, become: true, become_user: root }
-    - { role: certbot, become: true, become_user: root }
+    - { role: certbot, become: true, become_user: root, when: 'wr_app_host != "localhost"' }
     - { role: geerlingguy.nginx, become: true, become_user: root }
     - { role: geerlingguy.docker, become: true, become_user: root }
-    - { role: wrinit }
+    - { role: webrecorder_init }
 #  tasks:
 

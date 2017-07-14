@@ -3,7 +3,8 @@
       repo: 'https://github.com/webrecorder/webrecorder'
       dest: '{{ wr_dir }}'
 
-  - stat: 'path={{ wr_dir }}/wr.env'
+  - stat:
+      path: '{{ wr_dir }}/wr.env'
     register: wr_env
 
   - name: 'WR Init'
@@ -12,6 +13,16 @@
       chdir: '{{ wr_dir }}'
     when: wr_env.stat.exists == False
 
+  - name: 'WR Set Hostnames in Env'
+    lineinfile:
+      path: '{{ wr_dir }}/wr.env'
+      regexp: '{{ item.regexp }}'
+      line: '{{ item.replace }}'
+
+    with_items:
+      - { regexp: 'APP_HOST=', replace: 'APP_HOST={{ wr_app_host }}' }
+      - { regexp: 'CONTENT_HOST=', replace: 'CONTENT_HOST={{ wr_content_host }}' }
+
   - name: 'WR Run Docker Compose'
     become: true
     become_user: "{{ ansible_user_id }}"
@@ -19,4 +30,7 @@
       project_src: '{{ wr_dir }}'
       build: yes
       state: present   
+
+
+
 
