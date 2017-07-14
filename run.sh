@@ -1,10 +1,17 @@
+#!/bin/bash
 
 ansible --version
 
 if [ $? -ne 0 ]; then
     sudo apt-get update
-    sudo apt-get install -qqy python-pip libssl-dev
-    sudo pip install cryptography ansible
+    sudo apt-get install software-properties-common
+    sudo apt-add-repository ppa:ansible/ansible -y
+    sudo apt-get update
+    sudo apt-get install ansible
+fi
+
+
+if ! sudo ansible-galaxy list | grep -q 'nginx'; then
     sudo ansible-galaxy install -r requirements.yml
     sudo chown -R $USER ~/.ansible
 fi
@@ -19,7 +26,6 @@ if [ $(id -gn) != $group ]; then
 
   if ! groups | grep -q $group; then
     sudo usermod -aG docker $USER
-    #exec sg $group "$0 $*"
     exec sg $group "$cmd --extra-vars \"$1\""
     return
   fi

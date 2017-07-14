@@ -10,6 +10,10 @@
     nginx_conf_template: "{{ playbook_dir }}/templates/nginx.conf"
     nginx_vhost_template: "{{ playbook_dir }}/templates/wrhost.conf"
     nginx_remove_default_vhost: true
+
+    nginx_ppa_use: true
+    nginx_ppa_version: stable
+
     nginx_vhosts:
       - server_name: "{{ wr_app_host }}"
         filename: "{{ wr_app_host }}.conf"
@@ -21,7 +25,6 @@
 
     pip_install_packages:
       - name: docker-compose
-      - name: cryptography
 
   pre_tasks:
     - fail:
