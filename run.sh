@@ -6,6 +6,7 @@ if [ $? -ne 0 ]; then
     sudo apt-get install -qqy python-pip libssl-dev
     sudo pip install cryptography ansible
     sudo ansible-galaxy install -r requirements.yml
+    sudo chown -R $USER ~/.ansible
 fi
 
 group=docker
