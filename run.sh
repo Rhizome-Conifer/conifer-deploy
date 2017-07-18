@@ -5,14 +5,20 @@ ansible --version
 # Install Ansible
 if [ $? -ne 0 ]; then
     sudo apt-get update
+
     if [ $? -eq 0 ]; then
         sudo apt-get install -qqy software-properties-common
         sudo apt-add-repository ppa:ansible/ansible -y
         sudo apt-get update
         sudo apt-get install -qqy ansible
     else
-        sudo yum install epel-release
-        sudo yum install ansible
+        sudo yum install -y epel-release
+        sudo yum install -y ansible
+
+	if [ $? -ne 0 ]; then
+	    sudo pip install ansible
+        fi
+
         # allow nginx permission to access localhost docker
         setsebool httpd_can_network_connect on -P
     fi
