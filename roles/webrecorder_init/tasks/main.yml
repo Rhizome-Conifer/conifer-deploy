@@ -23,6 +23,12 @@
       - { regexp: 'APP_HOST=', replace: 'APP_HOST={{ wr_app_host }}' }
       - { regexp: 'CONTENT_HOST=', replace: 'CONTENT_HOST={{ wr_content_host }}' }
 
+  - name: 'WR Install Remote Browsers'
+    docker_image:
+      name: 'oldwebtoday/{{ item }}'
+
+    with_items: '{{ wr_remote_browsers }}'
+
   - name: 'WR Run Docker Compose'
     become: true
     become_user: "{{ ansible_user_id }}"

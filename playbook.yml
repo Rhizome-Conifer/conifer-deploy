@@ -1,6 +1,12 @@
 - hosts: server
   vars:
     wr_dir: ~/webrecorder
+    wr_app_host: ''
+    wr_content_host: '{{ wr_app_host }}'
+
+    wr_remote_browsers:
+      - 'chrome:53'
+      - 'firefox:49'
 
     cert_key_name: '{{ wr_app_host }}'
 
@@ -13,28 +19,27 @@
     nginx_ppa_use: true
     nginx_ppa_version: stable
 
-    nginx_vhosts:
-      - server_name: "{{ wr_app_host }}"
-        filename: "{{ wr_app_host }}.conf"
-        include_ws: true
+    certbot_auto_renew: true
+    certbot_auto_renew_user: "{{ ansible_user }}"
+    certbot_auto_renew_hour: 12
+    certbot_auto_renew_minute: 26
 
+    nginx_vhosts:
       - server_name: "{{ wr_content_host }}"
         filename: "{{ wr_content_host }}.conf"
         include_ws: false
 
+      - server_name: "{{ wr_app_host }}"
+        filename: "{{ wr_app_host }}.conf"
+        include_ws: true
+
     pip_install_packages:
       - name: docker-compose
 
-  pre_tasks:
-    - fail:
-        msg: 'Variables "wr_app_host" and "wr_content_host" must be defined'
-      when: "'wr_app_host' not in vars or 'wr_content_host' not in vars"
-
   roles:
     - { role: geerlingguy.pip, become: true, become_user: root }
-    - { role: certbot, become: true, become_user: root, when: 'wr_app_host != "localhost"' }
-    - { role: geerlingguy.nginx, become: true, become_user: root }
+    - { role: certbot, become: true, become_user: root, when: "wr_app_host != ''" }
+    - { role: geerlingguy.nginx, become: true, become_user: root, when: "wr_app_host != ''" }
     - { role: geerlingguy.docker, become: true, become_user: root }
     - { role: webrecorder_init }
-#  tasks:
 

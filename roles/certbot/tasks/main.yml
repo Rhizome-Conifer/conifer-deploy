@@ -1,27 +1,14 @@
 ---
-  - name: 'Add Apt'
-    apt_repository:
-      repo: 'ppa:certbot/certbot'
+  - name: 'Stop nginx'
+    service: name=nginx state=stopped
 
-  - name: Update apt
-    apt: update_cache=yes
-
-  - name: Install letencrypt
-    apt: name={{item}} state=present
-    with_items:
-      - letsencrypt
-      #- python-certbot-nginx
+  - name: 'Install Certbot'
+    include_role:
+      name: geerlingguy.certbot
 
   - name: Run Certbot
     shell: certbot certonly --standalone --agree-tos --email "{{ certbot_email }}" --no-redirect -n -d "{{ wr_app_host }},{{ wr_content_host }}"
     register: runcert
 
   - debug: var=runcert
-
-  - name: Certbot Renew Cron
-    cron:
-      name: "certbot renew"
-      minute: "26"
-      hour: "7"
-      job: 'certbot renew -n --post-hook "service reload nginx"'
 
