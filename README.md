@@ -27,7 +27,7 @@ Same as above, but uses only a single domain. Installs front-end nginx and gets 
 
 Usage: `./run.sh wr_app_host=example.webrecorder.io`
 
-Webrecorder should then be accessible via `https://example.webrecorder.io` and content loaded from `https://example.wbrc.io`
+Webrecorder should then be accessible via `https://example.webrecorder.io` and content is also loaded from the same domain.
 
 - ### Local Deployment Only -- No SSL Certs or frontend nginx
 
