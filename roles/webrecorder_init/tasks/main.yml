@@ -2,13 +2,15 @@
     git:
       repo: 'https://github.com/webrecorder/webrecorder'
       dest: '{{ wr_dir }}'
+      version: 'master'
 
-  - stat:
+  - name: 'Check if already inited (wr.env exists)'
+    stat:
       path: '{{ wr_dir }}/wr.env'
     register: wr_env
 
   - name: 'WR Init'
-    shell: ./init-default.sh
+    command: ./init-default.sh
     args:
       chdir: '{{ wr_dir }}'
     when: wr_env.stat.exists == False
@@ -35,7 +37,7 @@
     docker_service:
       project_src: '{{ wr_dir }}'
       build: yes
-      state: present   
+      state: present
 
 
 
