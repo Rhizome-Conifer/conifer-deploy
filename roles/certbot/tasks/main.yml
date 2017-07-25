@@ -1,14 +1,15 @@
 ---
-  - name: 'Stop nginx'
-    service: name=nginx state=stopped
-
   - name: 'Install Certbot'
     include_role:
       name: geerlingguy.certbot
 
-  - name: Run Certbot
-    shell: certbot certonly --standalone --agree-tos --email "{{ certbot_email }}" --no-redirect -n -d "{{ wr_app_host }},{{ wr_content_host }}"
-    register: runcert
+  - block:
+      - include: run.yml
 
-  - debug: var=runcert
+    rescue:
+      - name: 'Stop nginx'
+        service: name=nginx state=stopped
+
+      - include: run.yml
+
 
