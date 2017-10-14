@@ -1,4 +1,4 @@
-## Webrecorder Setup (using Ansible)
+## Webrecorder Deployment (using Ansible)
 
 *Tested on Ubuntu 14.04, 16.04, CentOS 7*
 
@@ -17,7 +17,7 @@ The following deployment options are available:
 Installs front-end nginx, Docker and gets SSL certs from Lets Encrypt for `wr_app_host` and `wr_content_host` domains, and then starts Webrecorder in Docker.
 Strongly recommendeded for `wr_app_host` and `wr_content_host` domains to be separate domains
 
-Usage: `./run.sh wr_app_host=example.webrecorder.io wr_content_host=example.wbrc.io`
+Usage: `./run.sh "wr_app_host=example.webrecorder.io wr_content_host=example.wbrc.io"`
 
 Webrecorder should then be accessible via `https://example.webrecorder.io` and content loaded from `https://example.wbrc.io`
 
@@ -25,7 +25,7 @@ Webrecorder should then be accessible via `https://example.webrecorder.io` and c
 
 Same as above, but uses only a single domain. Installs front-end nginx and gets SSL certs from Lets Encrypt
 
-Usage: `./run.sh wr_app_host=example.webrecorder.io`
+Usage: `./run.sh "wr_app_host=example.webrecorder.io"`
 
 Webrecorder should then be accessible via `https://example.webrecorder.io` and content is also loaded from the same domain.
 

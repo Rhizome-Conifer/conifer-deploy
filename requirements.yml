@@ -1,6 +1,7 @@
 - src: geerlingguy.pip
 
-- src: geerlingguy.certbot
+#- src: geerlingguy.certbot
+- src: git+https://github.com/JeroenED/ansible-role-certbot.git
 
 - src: geerlingguy.nginx
 
