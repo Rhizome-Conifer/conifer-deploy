@@ -4,12 +4,12 @@
       name: geerlingguy.certbot
 
   - block:
-      - include: run.yml
+      - import_tasks: run.yml
 
     rescue:
       - name: 'Stop nginx'
         service: name=nginx state=stopped
 
-      - include: run.yml
+      - import_tasks: run.yml
 
 
